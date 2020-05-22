@@ -39,5 +39,7 @@ window.onload = function() {
 		image_draw(window.user_function, domain, codomain);
 	}
 	draw.grid(codomain);
+	draw.grid(domain);
 	draw.axes(codomain);
+	draw.axes(domain);
 }
