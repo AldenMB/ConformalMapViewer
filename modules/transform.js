@@ -4,7 +4,7 @@ function clamp(num, min, max){
 
 function complex2pixel(complex, width, height, unit){
 	let x = math.re(complex)*unit + width/2;
-	let y = -math.im(complex)*unit + height/2;
+	let y = -1*math.im(complex)*unit + height/2;
 	x = clamp(x, 0, width-1)
 	y = clamp(y, 0, height-1)
 	return {x:Math.round(x),y:Math.round(y)};
@@ -26,7 +26,7 @@ function preimage(func, domain, codomain, domain_unit = 100, codomain_unit = 100
 	for(let dx=0; dx<dwidth; ++dx){
 		for(let dy=0; dy<dheight; ++dy){
 			const dnum = pixel2complex(dx, dy, dwidth, dheight, domain_unit);
-			const cnum = func.evaluate({x:dnum}).valueOf()[0];
+			const cnum = func.evaluate({x:dnum});
 			const {x: cx, y: cy} = complex2pixel(cnum, cwidth, cheight, codomain_unit);
 			const ci = 4*(cy*cwidth+cx);
 			const di = 4*(dx+dwidth*dy);
@@ -48,7 +48,7 @@ function image_draw(func, domain, codomain, domain_unit = 25, codomain_unit = 25
 	for(let dx=0; dx<dwidth; ++dx){
 		for(let dy=0; dy<dheight; ++dy){
 			const dnum = pixel2complex(dx, dy, dwidth, dheight, domain_unit);
-			const cnum = func.evaluate({x:dnum}).valueOf()[0];
+			const cnum = func.evaluate({x:dnum});
 			const {x: cx, y: cy} = complex2pixel(cnum, cwidth, cheight, codomain_unit);
 			const ci = 4*(cy*cwidth+cx);
 			const di = 4*(dx+dwidth*dy);
