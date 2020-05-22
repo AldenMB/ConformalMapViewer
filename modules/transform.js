@@ -38,7 +38,7 @@ function preimage(func, domain, codomain, domain_unit = 100, codomain_unit = 100
 	dctx.putImageData(domain_data, 0, 0);
 }
 
-function image_draw(func, domain, codomain, domain_unit = 25, codomain_unit = 25){
+function image_draw(func, domain, codomain, domain_unit = 100, codomain_unit = 100){
 	const {width:dwidth, height:dheight} = domain;
 	const dctx = domain.getContext("2d");
 	const {width:cwidth, height:cheight} = codomain;

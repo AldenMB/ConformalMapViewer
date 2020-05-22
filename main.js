@@ -4,9 +4,17 @@ import {preimage, image_draw} from './modules/transform.js';
 function get_user_function(){
 	const input = document.getElementById("user_supplied_function").value;
 	const display = document.getElementById("parsed_function");
-	const f = math.parse(input);
-	display.innerHTML = f.toString(); //use toTex to get latex
-	window.user_function = f.compile();
+	try {
+		const f = math.parse(input);
+		display.innerHTML = f.toString(); //use toTex to get latex
+		window.user_function = f.compile();
+	} catch (e) {
+		if (e instanceof SyntaxError){
+			display.innerHTML = "could not parse input";
+		} else {
+			throw(e);
+		}
+	}
 }
 
 window.onload = function() {
@@ -31,13 +39,13 @@ window.onload = function() {
 	document.getElementById('codomain_axes').onclick = function(){
 		draw.axes(codomain);
 	}
-	document.getElementById('parser').onclick = get_user_function
 	document.getElementById('preimage').onclick = function(){
 		preimage(window.user_function, domain, codomain);
 	}
 	document.getElementById('image').onclick = function(){
 		image_draw(window.user_function, domain, codomain);
 	}
+	document.getElementById("user_supplied_function").oninput = get_user_function;
 	draw.grid(codomain);
 	draw.grid(domain);
 	draw.axes(codomain);
