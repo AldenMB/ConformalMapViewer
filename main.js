@@ -38,4 +38,6 @@ window.onload = function() {
 	document.getElementById('image').onclick = function(){
 		image_draw(window.user_function, domain, codomain);
 	}
+	draw.grid(codomain);
+	draw.axes(codomain);
 }

@@ -1,5 +1,5 @@
 function axes(canvas, {lineWidth = 2, color = "blue"}={}) {
-	const {width, height} = canvas.getBoundingClientRect();
+	const {width, height} = canvas;
 	const ctx = canvas.getContext("2d");
 	ctx.beginPath();
 	ctx.lineWidth = lineWidth;
@@ -12,7 +12,7 @@ function axes(canvas, {lineWidth = 2, color = "blue"}={}) {
 }
 
 function grid(canvas, {spacing = 25, lineWidth = 1, color = "lightblue"}={}) {
-	const {width, height} = canvas.getBoundingClientRect();
+	const {width, height} = canvas;
 	const ctx = canvas.getContext("2d");
 	ctx.beginPath();
 	ctx.lineWidth = lineWidth;
@@ -33,7 +33,7 @@ function grid(canvas, {spacing = 25, lineWidth = 1, color = "lightblue"}={}) {
 }
 
 function clear(canvas) {
-	const {width, height} = canvas.getBoundingClientRect();
+	const {width, height} = canvas;
 	const ctx = canvas.getContext("2d");
 	ctx.clearRect(0,0,width, height);
 }
