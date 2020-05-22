@@ -33,14 +33,24 @@ Welcome to the world of conformal maps!
 		<button type="button" id="domain_clear">clear</button>
 		<button type="button" id="domain_grid">grid</button>
 		<button type="button" id="domain_axes">axes</button>
+		<button type="button" id="preimage">preimage</button>
 	</td>
 	<td>
 		<button type="button" id="codomain_clear">clear</button>
 		<button type="button" id="codomain_grid">grid</button>
 		<button type="button" id="codomain_axes">axes</button>
+		<button type="button" id="image">image</button>
 	</td>
 </tr>
 </table>
+<div>
+Enter a function to visualize here:
+<textarea id="user_supplied_function" rows="1">
+x^2
+</textarea>
+<button type="button" id="parser"> Parse it! </button>
+<pre id="parsed_function"> Once you parse a function it will appear here. </pre>
+</div>
 
 <p>
 This web page was made by Alden Bradford. Started May 21, 2020.
