@@ -22,6 +22,28 @@ function get_user_function(){
 	}
 }
 
+
+function add_hover_coords(canvas, display, unit = 100){
+	canvas.addEventListener('mousemove', function(e){
+		const rect = canvas.getBoundingClientRect();
+		const x = e.clientX - rect.left;
+		const y = e.clientY - rect.top;
+		const re = (x - canvas.width/2) / unit;
+		const im = (canvas.height/2 - y) / unit;
+		let re_str = re.toFixed(2);
+		if(re_str >= 0){
+			re_str = ' '+re_str;
+		}
+		let im_str;
+		if(im>=0){
+			im_str = ' + ' + im.toFixed(2);
+		} else {
+			im_str = ' - ' + (-im).toFixed(2);
+		}
+		display.innerHTML = re_str+im_str+'i';
+	});
+}
+
 window.onload = function() {
 	const domain = document.getElementById("domain_canvas");
 	const codomain = document.getElementById("codomain_canvas");
@@ -52,6 +74,8 @@ window.onload = function() {
 	document.getElementById('image').onclick = function(){
 		image_draw(window.user_function, domain, codomain);
 	}
+	add_hover_coords(domain, document.getElementById("domain_coords"));
+	add_hover_coords(codomain, document.getElementById("codomain_coords"));
 	document.getElementById("user_supplied_function").oninput = get_user_function;
 	draw.grid(codomain);
 	draw.grid(domain);
