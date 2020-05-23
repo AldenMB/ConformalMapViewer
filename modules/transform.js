@@ -28,7 +28,10 @@ function pixelmap(domain_pixel, func, domain, codomain, domain_unit, codomain_un
 	const {width:cwidth, height:cheight} = codomain;
 	const {x, y} = domain_pixel;
 	const dnum = pixel2complex(x, y, dwidth, dheight, domain_unit);
-	const cnum = func.evaluate({x:dnum});
+	let cnum = func.evaluate({x:dnum});
+	if(cnum instanceof math.ResultSet){
+		cnum = cnum.entries[0];
+	}
 	return complex2pixel(cnum, cwidth, cheight, codomain_unit);
 }
 
