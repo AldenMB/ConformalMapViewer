@@ -6,7 +6,10 @@ function get_user_function(){
 	const display = document.getElementById("parsed_function");
 	try {
 		const f = math.parse(input);
-		display.innerHTML = "you have entered: " + f.toString()+", which is also written as: "+f.toTex();
+		display.innerHTML = "you have entered: " + f.toString();
+		const latex = f.toTex({parenthesis: 'hide', implicit: 'hide'});
+		const elem = MathJax.Hub.getAllJax('pretty')[0];
+		MathJax.Hub.Queue(['Text', elem, latex]);
 		window.user_function = f.compile();
 	} catch (e) {
 		if (e instanceof SyntaxError){
