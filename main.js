@@ -6,7 +6,7 @@ function get_user_function(){
 	const display = document.getElementById("parsed_function");
 	try {
 		const f = math.parse(input);
-		display.innerHTML = f.toString(); //use toTex to get latex
+		display.innerHTML = "you have entered: " + f.toString()+", which is also written as: "+f.toTex();
 		window.user_function = f.compile();
 	} catch (e) {
 		if (e instanceof SyntaxError){

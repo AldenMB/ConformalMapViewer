@@ -2,18 +2,34 @@ function clamp(num, min, max){
 	return Math.max(min, Math.min(max, num));
 }
 
+function condition_pix(pixel, width, height){
+	let {x, y} = pixel;
+	x = clamp(x, 0, width-1);
+	y = clamp(y, 0, height-1);
+	x = Math.round(x);
+	y = Math.round(y);
+	return {x,y};
+}
+
 function complex2pixel(complex, width, height, unit){
-	let x = math.re(complex)*unit + width/2;
-	let y = -1*math.im(complex)*unit + height/2;
-	x = clamp(x, 0, width-1)
-	y = clamp(y, 0, height-1)
-	return {x:Math.round(x),y:Math.round(y)};
+	const x = math.re(complex)*unit + width/2;
+	const y = -1*math.im(complex)*unit + height/2;
+	return {x, y};
 }
 
 function pixel2complex(x, y, width, height, unit){
 	const real = (x - width/2)/unit;
 	const imaginary = -(y - height/2)/unit;
 	return math.complex(real, imaginary);
+}
+
+function pixelmap(domain_pixel, func, domain, codomain, domain_unit, codomain_unit){
+	const {width:dwidth, height:dheight} = domain;
+	const {width:cwidth, height:cheight} = codomain;
+	const {x, y} = domain_pixel;
+	const dnum = pixel2complex(x, y, dwidth, dheight, domain_unit);
+	const cnum = func.evaluate({x:dnum});
+	return complex2pixel(cnum, cwidth, cheight, codomain_unit);
 }
 
 function preimage(func, domain, codomain, domain_unit = 100, codomain_unit = 100){
@@ -25,9 +41,8 @@ function preimage(func, domain, codomain, domain_unit = 100, codomain_unit = 100
 	const domain_data = dctx.createImageData(dwidth, dheight);
 	for(let dx=0; dx<dwidth; ++dx){
 		for(let dy=0; dy<dheight; ++dy){
-			const dnum = pixel2complex(dx, dy, dwidth, dheight, domain_unit);
-			const cnum = func.evaluate({x:dnum});
-			const {x: cx, y: cy} = complex2pixel(cnum, cwidth, cheight, codomain_unit);
+			const unconditioned = pixelmap({x:dx, y:dy}, func, domain, codomain, domain_unit, codomain_unit);
+			const {x: cx, y:cy} = condition_pix(unconditioned, cwidth, cheight);
 			const ci = 4*(cy*cwidth+cx);
 			const di = 4*(dx+dwidth*dy);
 			for(let j of [0,1,2,3]) {
@@ -47,9 +62,8 @@ function image_draw(func, domain, codomain, domain_unit = 100, codomain_unit = 1
 	const codomain_data = cctx.createImageData(cwidth, cheight);
 	for(let dx=0; dx<dwidth; ++dx){
 		for(let dy=0; dy<dheight; ++dy){
-			const dnum = pixel2complex(dx, dy, dwidth, dheight, domain_unit);
-			const cnum = func.evaluate({x:dnum});
-			const {x: cx, y: cy} = complex2pixel(cnum, cwidth, cheight, codomain_unit);
+			const unconditioned = pixelmap({x:dx, y:dy}, func, domain, codomain, domain_unit, codomain_unit);
+			const {x: cx, y:cy} = condition_pix(unconditioned, cwidth, cheight);
 			const ci = 4*(cy*cwidth+cx);
 			const di = 4*(dx+dwidth*dy);
 			for(let j of [0,1,2,3]) {
@@ -58,6 +72,41 @@ function image_draw(func, domain, codomain, domain_unit = 100, codomain_unit = 1
 		}
 	}
 	cctx.putImageData(codomain_data, 0, 0);
+}
+
+function voronoi_image(func, domain, codomain, domain_unit = 100, codomain_unit = 100){
+	const {width:dwidth, height:dheight} = domain;
+	const dctx = domain.getContext("2d");
+	const {width:cwidth, height:cheight} = codomain;
+	const cctx = codomain.getContext("2d");
+	const domain_data = dctx.getImageData(0, 0, dwidth, dheight);
+	const codomain_data = cctx.createImageData(cwidth, cheight);
+	const image_points = [];
+	for(let dx=0; dx<dwidth; ++dx){
+		for(let dy=0; dy<dheight; ++dy){
+			const {x: cx, y:cy} = pixelmap(
+				{x:dx, y:dy}, 
+				func, 
+				domain, 
+				codomain, 
+				domain_unit, 
+				codomain_unit
+			);
+			if(0<= cx && cx<cwidth && 0<=cy && cy<cwidth){
+				const di = 4*(dx+dwidth*dy);
+				image_points.push({
+					x: cx,
+					y: cy,
+					r: domain_data.data[di],
+					g: domain_data.data[di+1],
+					b: domain_data.data[di+2],
+					a: domain_data.data[di+3]
+				});
+			}
+		}
+	}
+	codomain_data.data = voronoi_fill(image_points, cwidth, cheight);
+	cctx.putImageData(codomain_data, 0, 0);	
 }
 
 export {preimage, image_draw}
