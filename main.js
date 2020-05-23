@@ -8,8 +8,10 @@ function get_user_function(){
 		const f = math.parse(input);
 		display.innerHTML = "you have entered: " + f.toString();
 		const latex = f.toTex({parenthesis: 'hide', implicit: 'hide'});
-		const elem = MathJax.Hub.getAllJax('pretty')[0];
-		MathJax.Hub.Queue(['Text', elem, latex]);
+		const elem = MathJax.Hub.getAllJax('jax')[0];
+		if(elem){
+			MathJax.Hub.Queue(['Text', elem, latex]);
+		}
 		window.user_function = f.compile();
 	} catch (e) {
 		if (e instanceof SyntaxError){
@@ -23,7 +25,6 @@ function get_user_function(){
 window.onload = function() {
 	const domain = document.getElementById("domain_canvas");
 	const codomain = document.getElementById("codomain_canvas");
-	get_user_function()
 	document.getElementById('domain_clear').onclick = function(){
 		draw.clear(domain);
 	}
@@ -53,4 +54,5 @@ window.onload = function() {
 	draw.grid(domain);
 	draw.axes(codomain);
 	draw.axes(domain);
+	get_user_function();
 }
