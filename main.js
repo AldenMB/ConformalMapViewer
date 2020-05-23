@@ -43,6 +43,9 @@ window.onload = function() {
 	document.getElementById('codomain_axes').onclick = function(){
 		draw.axes(codomain);
 	}
+	document.getElementById('swap').onclick = function(){
+		draw.swap(domain,codomain);
+	}
 	document.getElementById('preimage').onclick = function(){
 		preimage(window.user_function, domain, codomain);
 	}

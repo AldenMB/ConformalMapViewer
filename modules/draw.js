@@ -38,4 +38,14 @@ function clear(canvas) {
 	ctx.clearRect(0,0,width, height);
 }
 
-export {axes, grid, clear};
+function swap(canvas1, canvas2) {
+	const ctx1 = canvas1.getContext("2d");
+	const ctx2 = canvas2.getContext("2d");
+	const {width:w1, height:h1} = canvas1;
+	const {width:w2, height:h2} = canvas2;
+	const temp = ctx2.getImageData(0, 0, w2, h2);
+	ctx2.putImageData(ctx1.getImageData(0,0,w1,h1), 0, 0);
+	ctx1.putImageData(temp, 0, 0);
+}
+
+export {axes, grid, clear, swap};
