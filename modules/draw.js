@@ -59,6 +59,9 @@ function touch_listener(canvases, toolbar){
 	}
 	toolbar.brush_size.oninput = onLineSizeChange;
 	toolbar.brush_color.oninput = onColorChange;
+	for(let tool of toolbar.tools){
+		tool.onclick = onToolChange;
+	}
 	
 	function onToolChange(){
 		for(let tool of toolbar.tools){
