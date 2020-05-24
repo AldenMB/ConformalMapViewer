@@ -1,5 +1,6 @@
 import * as draw from './modules/draw.js';
 import {preimage, image_draw} from './modules/transform.js';
+import {load_image} from './modules/load_image.js';
 
 function get_user_function(){
 	const input = document.getElementById("user_supplied_function").value;
@@ -83,6 +84,12 @@ window.onload = function() {
 	}
 	document.getElementById('image').onclick = function(){
 		image_draw(window.user_function, domain, codomain);
+	}
+	document.getElementById('domain_load').onclick = function(){
+		load_image(domain);
+	}
+	document.getElementById('codomain_load').onclick = function(){
+		load_image(codomain);
 	}
 	add_hover_coords(domain, document.getElementById("coords"));
 	add_hover_coords(codomain, document.getElementById("coords"));
