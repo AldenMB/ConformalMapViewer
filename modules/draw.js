@@ -48,4 +48,135 @@ function swap(canvas1, canvas2) {
 	ctx1.putImageData(temp, 0, 0);
 }
 
-export {axes, grid, clear, swap};
+//based on the tutorial at https://zipso.net/a-simple-touchscreen-sketchpad-using-javascript-and-html5/
+function touch_listener(canvases, toolbar){
+	let linesize, linecolor, selected_tool;
+	onToolChange();
+	onLineSizeChange();
+	onColorChange();
+	for(let canvas of canvases){
+		add_drawing_listeners(canvas);
+	}
+	toolbar.brush_size.oninput = onLineSizeChange;
+	toolbar.brush_color.oninput = onColorChange;
+	
+	function onToolChange(){
+		for(let tool of toolbar.tools){
+			if(tool.checked){
+				selected_tool = tool.id;
+			}
+		}
+	}
+	
+	function onLineSizeChange(){
+		linesize = toolbar.brush_size.value;
+		redraw_brush_preview();
+	}
+	
+	function onColorChange(){
+		linecolor = toolbar.brush_color.value;
+		redraw_brush_preview();
+	}
+	
+	function redraw_brush_preview(){
+		clear(toolbar.brush_preview);
+		const ctx = toolbar.brush_preview.getContext("2d");
+		ctx.fillStyle = linecolor;
+		ctx.beginPath();
+		ctx.arc(
+			toolbar.brush_preview.width/2,
+			toolbar.brush_preview.height/2,
+			linesize/2,
+			0, 
+			Math.PI*2
+		);
+		ctx.closePath();
+		ctx.fill()
+	}
+	
+	function add_drawing_listeners(canvas){
+		let mouse_is_down = false;
+		let mousex, mousey, touchx, touchy, lastx = -1, lasty = -1;
+		const ctx = canvas.getContext("2d");
+		
+		canvas.addEventListener('mousedown', onMouseDown, false);
+		canvas.addEventListener('mousemove', onMouseMove, false);
+		window.addEventListener('mouseup', onMouseUp, false);
+		canvas.addEventListener('touchstart', onTouchStart, false);
+		canvas.addEventListener('touchend', onTouchEnd, false);
+		canvas.addEventListener('touchmove', onTouchMove, false);
+		
+		function drawLine(x, y){
+			if(selected_tool !== "brush"){
+				return;
+			}			
+			if(lastx === -1){
+				lastx = x;
+				lasty = y;
+			}
+			ctx.strokeStyle = linecolor;
+			ctx.lineJoin = "round";
+			ctx.lineCap = "round";
+			ctx.lineWidth = linesize;
+			ctx.beginPath();
+			ctx.moveTo(lastx, lasty);
+			ctx.lineTo(x, y);
+			ctx.stroke();
+			lastx = x;
+			lasty = y;
+		}
+		function onMouseDown(){
+			mouse_is_down = true;
+			drawLine(mousex, mousey);
+		}
+		function onMouseUp(){
+			mouse_is_down = false;
+			lastx = -1;
+			lasty = -1;
+		}
+		function onMouseMove(e){
+			getMousePosition(e);
+			if(mouse_is_down){
+				drawLine(mousex, mousey);
+			}
+		}
+		function getMousePosition(e){
+			if(!e){
+				e = event;
+			}
+			if(e.offsetX){
+				mousex = e.offsetX;
+				mousey = e.offsetY;
+			} else if(e.layerX){
+				mousex = e.layerX;
+				mousey = e.layerY;
+			}
+		}
+		function onTouchStart(){
+			getTouchPosition();
+			drawLine(touchx, touchy);
+			event.preventDefault();
+		}
+		function onTouchEnd(){
+			lastx = -1;
+			lasty = -1;
+		}
+		function onTouchMove(e){
+			getTouchPosition(e);
+			drawLine(touchx, touchy);
+			event.preventDefault();
+		}
+		function getTouchPosition(e){
+			if(!e){
+				e = event;
+			}
+			if(e.touches && e.touches.length === 1){
+				const t = e.touches[0];
+				touchx = t.pageX-t.target.offsetLeft;
+				touchy = t.pageY-t.target.offsetTop;
+			}
+		}
+	}	
+}
+
+export {axes, grid, clear, swap, touch_listener};

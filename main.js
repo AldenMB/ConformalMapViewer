@@ -47,6 +47,13 @@ function add_hover_coords(canvas, display, unit = 100){
 window.onload = function() {
 	const domain = document.getElementById("domain_canvas");
 	const codomain = document.getElementById("codomain_canvas");
+	const toolbar = {
+		tools: document.getElementsByName("tool"),
+		brush_color: document.getElementById("brush_color"),
+		brush_size: document.getElementById("brush_size"),
+		brush_preview: document.getElementById("brush_preview")
+	}
+	draw.touch_listener([domain,codomain], toolbar);
 	document.getElementById('domain_clear').onclick = function(){
 		draw.clear(domain);
 	}
