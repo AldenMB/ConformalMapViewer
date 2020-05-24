@@ -6,7 +6,7 @@ function get_user_function(){
 	const display = document.getElementById("parsed_function");
 	try {
 		const f = math.parse(input);
-		display.innerHTML = "you have entered: " + f.toString();
+		display.innerHTML = f.toString();
 		const latex = f.toTex({parenthesis: 'hide', implicit: 'hide'});
 		const elem = MathJax.Hub.getAllJax('jax')[0];
 		if(elem){

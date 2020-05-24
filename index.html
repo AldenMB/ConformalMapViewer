@@ -46,37 +46,37 @@
 	</td>
 </tr>
 <tr>
-	<td colspan="2">
-		<div>
-		Enter a function to visualize here:
-		<textarea id="user_supplied_function" rows="1">x^2</textarea>
+	<td>
+		Enter a function to visualize here:<br>
+		<textarea id="user_supplied_function" rows="1" cols="45">x^2</textarea>
+	</td>
+	<td>
+		You have entered:
 		<pre id="parsed_function"> Once you parse a function it will appear here. </pre>
-		</div>
+	</td>
+</tr>
+<tr>
+	<td colspan="2">
 		<div id="jax">
 		This is what your expression looks like all formatted: \[\]
 		</div>	
 	</td>
 </tr>
-<tr>
-	<td colspan="2>
-	<div id="toolbar">
-		Brush color: <input type="color" id="brush_color">
-		Brush size: <input type="range" id="brush_size" min="0" max="20" value="10">
-		<br>
-		Tool select:
-		<form>
-		<input type="radio" id="brush" name="tool" checked>
-		<label for="brush">
-			<canvas id="brush_preview" width="20" height="20" style="border:1px solid #000000;"></canvas>
-		</label>
-		<input type="radio" id="stamp" name="tool">
-		<label for="stamp">stamp tool (not yet implemented)</label>
-		</form>
-	</div>
-	</td>
-</tr>
 </table>
-
+<div id="toolbar">
+	Brush color: <input type="color" id="brush_color">
+	Brush size: <input type="range" id="brush_size" min="0" max="20" value="10">
+	<br>
+	Tool select:
+	<form>
+	<input type="radio" id="brush" name="tool" checked>
+	<label for="brush">
+		<canvas id="brush_preview" width="25" height="25" style="border:1px solid #000000;"></canvas>
+	</label><br>
+	<input type="radio" id="stamp" name="tool">
+	<label for="stamp">stamp tool (not yet implemented)</label>
+	</form>
+</div>
 
 
 <p>
