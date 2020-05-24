@@ -40,7 +40,10 @@ function add_hover_coords(canvas, display, unit = 100){
 		} else {
 			im_str = ' - ' + (-im).toFixed(2);
 		}
-		display.innerHTML = re_str+im_str+'i';
+		const theta = Math.atan2(im, re);
+		const theta_str = theta>=0? ' '+theta.toFixed(2) : theta.toFixed(2);
+		const r = Math.hypot(im, re);
+		display.innerHTML = re_str+im_str+'i (r='+r.toFixed(2)+', θ='+theta_str+')' ;
 	});
 }
 
@@ -81,8 +84,8 @@ window.onload = function() {
 	document.getElementById('image').onclick = function(){
 		image_draw(window.user_function, domain, codomain);
 	}
-	add_hover_coords(domain, document.getElementById("domain_coords"));
-	add_hover_coords(codomain, document.getElementById("codomain_coords"));
+	add_hover_coords(domain, document.getElementById("coords"));
+	add_hover_coords(codomain, document.getElementById("coords"));
 	document.getElementById("user_supplied_function").oninput = get_user_function;
 	draw.grid(codomain);
 	draw.grid(domain);
