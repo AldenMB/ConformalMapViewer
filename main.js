@@ -3,28 +3,6 @@ import {preimage, image_draw, quad_image} from './modules/transform.js';
 import {load_image} from './modules/load_image.js';
 import * as stamp from './modules/stamp.js';
 
-function get_user_function(){
-	const input = document.getElementById("user_supplied_function").value;
-	const display = document.getElementById("parsed_function");
-	try {
-		const f = math.parse(input);
-		display.innerHTML = f.toString();
-		const latex = f.toTex({parenthesis: 'hide', implicit: 'hide'});
-		const elem = MathJax.Hub.getAllJax('jax')[0];
-		if(elem){
-			MathJax.Hub.Queue(['Text', elem, latex]);
-		}
-		window.user_function = f.compile();
-	} catch (e) {
-		if (e instanceof SyntaxError){
-			display.innerHTML = "could not parse input";
-		} else {
-			throw(e);
-		}
-	}
-}
-
-
 function add_hover_coords(canvas, display, unit = 100){
 	canvas.addEventListener('mousemove', function(e){
 		const rect = canvas.getBoundingClientRect();
@@ -58,6 +36,7 @@ window.onload = function() {
 		brush_size: document.getElementById("brush_size"),
 		brush_preview: document.getElementById("brush_preview")
 	}
+	let user_function;
 	draw.touch_listener([domain,codomain], toolbar);
 	document.getElementById('domain_clear').onclick = function(){
 		draw.clear(domain);
@@ -81,13 +60,13 @@ window.onload = function() {
 		draw.swap(domain,codomain);
 	}
 	document.getElementById('preimage').onclick = function(){
-		preimage(window.user_function, domain, codomain);
+		preimage(user_function, domain, codomain);
 	}
 	document.getElementById('image').onclick = function(){
-		image_draw(window.user_function, domain, codomain);
+		image_draw(user_function, domain, codomain);
 	}
 	document.getElementById('quad_image').onclick = function(){
-		quad_image(window.user_function, domain, codomain);
+		quad_image(user_function, domain, codomain);
 	}
 	document.getElementById('domain_load').onclick = function(){
 		load_image(domain);
@@ -110,4 +89,25 @@ window.onload = function() {
 	draw.axes(codomain);
 	draw.axes(domain);
 	get_user_function();
+	
+	function get_user_function(){
+		const input = document.getElementById("user_supplied_function").value;
+		const display = document.getElementById("parsed_function");
+		try {
+			const f = math.parse(input);
+			display.innerHTML = f.toString();
+			const latex = f.toTex({parenthesis: 'hide', implicit: 'hide'});
+			const elem = MathJax.Hub.getAllJax('jax')[0];
+			if(elem){
+				MathJax.Hub.Queue(['Text', elem, latex]);
+			}
+			user_function = f.compile();
+		} catch (e) {
+			if (e instanceof SyntaxError){
+				display.innerHTML = "could not parse input";
+			} else {
+				throw(e);
+			}
+		}
+	}
 }
