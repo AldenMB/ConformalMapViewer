@@ -1,13 +1,11 @@
-function clamp(num, min, max){
-	return Math.max(min, Math.min(max, num));
-}
-
 function condition_pix(pixel, width, height){
 	let {x, y} = pixel;
-	x = clamp(x, 0, width-1);
-	y = clamp(y, 0, height-1);
 	x = Math.round(x);
 	y = Math.round(y);
+	if(x<0 || x>width || y<0 || y>height){
+		x = -1;
+		y = -1;
+	}
 	return {x,y};
 }
 
@@ -46,6 +44,9 @@ function preimage(func, domain, codomain, domain_unit = 100, codomain_unit = 100
 		for(let dy=0; dy<dheight; ++dy){
 			const unconditioned = pixelmap({x:dx, y:dy}, func, domain, codomain, domain_unit, codomain_unit);
 			const {x: cx, y:cy} = condition_pix(unconditioned, cwidth, cheight);
+			if(cx === -1){
+				continue;
+			}
 			const ci = 4*(cy*cwidth+cx);
 			const di = 4*(dx+dwidth*dy);
 			for(let j of [0,1,2,3]) {
@@ -67,6 +68,9 @@ function image_draw(func, domain, codomain, domain_unit = 100, codomain_unit = 1
 		for(let dy=0; dy<dheight; ++dy){
 			const unconditioned = pixelmap({x:dx, y:dy}, func, domain, codomain, domain_unit, codomain_unit);
 			const {x: cx, y:cy} = condition_pix(unconditioned, cwidth, cheight);
+			if(cx === -1){
+				continue;
+			}
 			const ci = 4*(cy*cwidth+cx);
 			const di = 4*(dx+dwidth*dy);
 			for(let j of [0,1,2,3]) {

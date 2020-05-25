@@ -65,9 +65,8 @@
 	</td>
 </tr>
 </table>
-<div id="toolbar">
-	Tool select:
-	<form>
+<form id="toolbar">
+	Tool select:<br>
 	<input type="radio" id="brush" name="tool" checked>
 	<label for="brush">
 		<canvas id="brush_preview" width="25" height="25" style="border:1px solid #000000;"></canvas>
@@ -75,13 +74,21 @@
 		size: <input type="range" id="brush_size" min="0" max="20" value="10">
 	</label><br>
 	<input type="radio" id="stamp" name="tool">
-	<label for="stamp">stamp tool (not yet implemented)</label>
-	</form>
-</div>
+	<label for="stamp">stamp tool (not yet implemented)</label><br>
+</form>
+
+<form id="stamp_select">
+	Choose which stamp to use:<br>
+	<input type="radio" id="stamp1">
+	<label for="stamp1">stamp1</label><br>
+	<input type="radio" id="stamp2">
+	<label for="stamp2">stamp2</label><br>
+</form>
+<button type="button" id="add_stamp">load a stamp from a file...</button>
 
 
 <p>
-This web page was made by Alden Bradford. Started May 21, 2020.
+This web page was made by Alden Bradford. Started May 21, 2020. <a href="https://github.com/AldenMB/ConformalMapViewer">View the source code at this link.</a>
 </p>
 </body>
 
