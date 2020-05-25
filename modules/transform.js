@@ -107,7 +107,7 @@ function quad_image(func, domain, codomain, domain_unit=100, codomain_unit=100){
 			const color = 'rgba('+domain_data.data.slice(di, di+4).join()+')'
 			cctx.beginPath();
 			cctx.fillStyle = color;
-			for(let{x,y} of [ pts[dx][dy], pts[dx+1][dy], pts[dx+1][dy+1], pts[dx][dy+1] ]){
+			for(let{x,y} of pointlist){
 				cctx.lineTo(x, y);
 			}
 			cctx.fill();
