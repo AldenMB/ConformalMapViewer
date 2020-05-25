@@ -69,6 +69,9 @@ function new_stamp(id, img){
 function add_listeners(canvases, toolbar, included_stamps, stamp_selector, newstamp_button){
 	let selected_tool, selected_image;
 	onToolChange();
+	for(let tool of toolbar.tools){
+		tool.addEventListener('click', onToolChange, false);
+	}
 	const stamplist = [];
 	for(let i=0; i<included_stamps.length; ++i){
 		stamplist.push(new_stamp("stamp"+i, included_stamps[i]));
@@ -85,6 +88,9 @@ function add_listeners(canvases, toolbar, included_stamps, stamp_selector, newst
 		canvas.addEventListener('mousedown', onMouseDown, false);
 		
 		function onMouseDown(e){
+			if(selected_tool !== 'stamp'){
+				return;
+			}
 			const {x, y} = getMousePosition(e);
 			apply_stamp(canvas, x, y, selected_image);
 		}
