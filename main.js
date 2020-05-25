@@ -1,6 +1,7 @@
 import * as draw from './modules/draw.js';
 import {preimage, image_draw} from './modules/transform.js';
 import {load_image} from './modules/load_image.js';
+import * as stamp from './modules/stamp.js';
 
 function get_user_function(){
 	const input = document.getElementById("user_supplied_function").value;
@@ -94,6 +95,13 @@ window.onload = function() {
 	add_hover_coords(domain, document.getElementById("coords"));
 	add_hover_coords(codomain, document.getElementById("coords"));
 	document.getElementById("user_supplied_function").oninput = get_user_function;
+	stamp.add_listeners(
+		[domain,codomain],
+		toolbar,
+		document.getElementById("default_stamps").getElementsByTagName('img'),
+		document.getElementById("stamp_select"),
+		document.getElementById("add_stamp")
+	);
 	draw.grid(codomain);
 	draw.grid(domain);
 	draw.axes(codomain);

@@ -21,35 +21,95 @@ function get_image(callback){
 	return img;
 }
 
-function add_stamp(stamplist){
-	const div = document.createElement('div');
+function new_stamp(id, img){
 	const radio = document.createElement('input');
 	radio.type = 'radio';
-	const id = 'stamp'+stamplist.length;
 	radio.id = id;
+	radio.name = 'stamp_select';
 	const label = document.createElement('label');
 	label.for = id;
-	div.appendChild(radio);
-	div.appendChild(label);
-	div.appendChild(document.createElement('br'));
 	const slider = document.createElement('input');
 	slider.type = 'range';
 	slider.min = 0;
 	slider.max = 400;
 	slider.value = 50;
+	slider.oninput = resize_canvas;
 	label.appendChild(slider);
 	const canvas = document.createElement('canvas');
-	canvas.width = slider.value;
-	canvas.height = slider.value;
-	const img = get_image(resize_canvas);
+	canvas.style = "border:1px solid #000000;";
+	if(!img){
+		img = get_image(resize_canvas);
+	} else {
+		resize_canvas();
+	}
+	label.appendChild(canvas);
+	
+	return {canvas, radio, label};
 	
 	function resize_canvas(){
-		
+		canvas.width = slider.value;
+		canvas.height = slider.value;
+		let {width:iw, height:ih} = img;
+		if(iw<ih){
+			iw *= canvas.height/ih;
+			ih = canvas.height;
+		} else if(ih<iw){
+			ih *= canvas.width/iw;
+			iw = canvas.width;
+		} else {
+			ih = canvas.height;
+			iw = canvas.width;
+		}
+		const ctx = canvas.getContext("2d");
+		clear(canvas);
+		ctx.drawImage(img, (canvas.width-iw)/2, (canvas.height-ih)/2, iw, ih);
 	}
 }
 
-function add_listeners(canvases, toolbar){
-	let selected_tool;
+function add_listeners(canvases, toolbar, included_stamps, stamp_selector, newstamp_button){
+	let selected_tool, selected_image;
+	onToolChange();
+	const stamplist = [];
+	for(let i=0; i<included_stamps.length; ++i){
+		stamplist.push(new_stamp("stamp"+i, included_stamps[i]));
+	}
+	stamplist.forEach(register_stamp);
+	newstamp_button.onclick = get_new_stamp;
+	canvases.forEach(add_stamp_listeners);
+	
+	if(!stamplist.some(st => st.radio.checked)){
+		stamplist[0].radio.click();
+	}
+	
+	function add_stamp_listeners(canvas){
+		canvas.addEventListener('mousedown', onMouseDown, false);
+		
+		function onMouseDown(e){
+			const {x, y} = getMousePosition(e);
+			apply_stamp(canvas, x, y, selected_image);
+		}
+		function getMousePosition(e){
+			let x, y;
+			if(!e){
+				e = event;
+			}
+			if(e.offsetX){
+				x = e.offsetX;
+				y = e.offsetY;
+			} else if(e.layerX){
+				x = e.layerX;
+				y = e.layerY;
+			}
+			return {x,y}
+		}
+	}
+	
+	function get_new_stamp(){
+		const id = "stamp"+stamplist.length;
+		const stamp = new_stamp(id);
+		stamplist.push(stamp);
+		register_stamp(stamp);
+	}
 	
 	function onToolChange(){
 		for(let tool of toolbar.tools){
@@ -59,9 +119,17 @@ function add_listeners(canvases, toolbar){
 		}
 	}
 	
-	function new_stamp(){
-		
+	function register_stamp(stamp){
+		stamp_selector.appendChild(stamp.radio);
+		stamp_selector.appendChild(stamp.label);
+		stamp_selector.appendChild(document.createElement('div'));
+		stamp.radio.onclick = function(){
+			if(stamp.radio.checked){
+				selected_image = stamp.canvas;
+			}
+		}
+		stamp.radio.onclick();
 	}
 }
 
-
+export {add_listeners};
