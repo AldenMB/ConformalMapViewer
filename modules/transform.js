@@ -1,3 +1,5 @@
+import {clear} from './draw.js';
+
 function condition_pix(pixel, width, height){
 	let {x, y} = pixel;
 	x = Math.round(x);
@@ -81,4 +83,45 @@ function image_draw(func, domain, codomain, domain_unit = 100, codomain_unit = 1
 	cctx.putImageData(codomain_data, 0, 0);
 }
 
-export {preimage, image_draw}
+function quad_image(func, domain, codomain, domain_unit=100, codomain_unit=100){
+	clear(codomain);
+	const {width:dwidth, height:dheight} = domain;
+	const dctx = domain.getContext("2d");
+	const {width:cwidth, height:cheight} = codomain;
+	const cctx = codomain.getContext("2d");
+	const domain_data = dctx.getImageData(0, 0, dwidth, dheight);
+	const pts = Array(cwidth).fill(0).map(()=>[]);
+	for(let dx=0; dx<dwidth; ++dx){
+		for(let dy=0; dy<dheight; ++dy){
+			const {x: cx, y:cy} = pixelmap({x:dx, y:dy}, func, domain, codomain, domain_unit, codomain_unit);
+			pts[dx][dy] = {x:cx, y:cy};
+		}
+	}
+	for(let dx=0;dx<(dwidth-1); ++dx){
+		for(let dy=0;dy<(dheight-1);++dy){	
+			const pointlist = [ pts[dx][dy], pts[dx+1][dy], pts[dx+1][dy+1], pts[dx][dy+1] ];
+			if(too_big(pointlist)){
+				continue;
+			}
+			const di = 4*(dx+dwidth*dy);
+			const color = 'rgba('+domain_data.data.slice(di, di+4).join()+')'
+			cctx.beginPath();
+			cctx.fillStyle = color;
+			for(let{x,y} of [ pts[dx][dy], pts[dx+1][dy], pts[dx+1][dy+1], pts[dx][dy+1] ]){
+				cctx.lineTo(x, y);
+			}
+			cctx.fill();
+		}
+	}
+	
+	function too_big(pointlist){
+		const xlist = pointlist.map(p => p.x);
+		const ylist = pointlist.map(p => p.y);
+		const xrange = Math.max(...xlist) - Math.min(...xlist);
+		const yrange = Math.max(...ylist) - Math.min(...ylist);
+		const bigrange = Math.max(xrange, yrange);
+		return bigrange > 100;
+	}
+}
+
+export {preimage, image_draw, quad_image}

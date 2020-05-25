@@ -1,5 +1,5 @@
 import * as draw from './modules/draw.js';
-import {preimage, image_draw} from './modules/transform.js';
+import {preimage, image_draw, quad_image} from './modules/transform.js';
 import {load_image} from './modules/load_image.js';
 import * as stamp from './modules/stamp.js';
 
@@ -85,6 +85,9 @@ window.onload = function() {
 	}
 	document.getElementById('image').onclick = function(){
 		image_draw(window.user_function, domain, codomain);
+	}
+	document.getElementById('quad_image').onclick = function(){
+		quad_image(window.user_function, domain, codomain);
 	}
 	document.getElementById('domain_load').onclick = function(){
 		load_image(domain);
