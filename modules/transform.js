@@ -100,7 +100,7 @@ function quad_image(func, domain, codomain, domain_unit=100, codomain_unit=100){
 	for(let dx=0;dx<(dwidth-1); ++dx){
 		for(let dy=0;dy<(dheight-1);++dy){	
 			const pointlist = [ pts[dx][dy], pts[dx+1][dy], pts[dx+1][dy+1], pts[dx][dy+1] ];
-			if(too_big(pointlist)){
+			if(too_big(pointlist)|| aspect_ratio(pointlist)>2){
 				continue;
 			}
 			const di = 4*(dx+dwidth*dy);
@@ -121,6 +121,15 @@ function quad_image(func, domain, codomain, domain_unit=100, codomain_unit=100){
 		const yrange = Math.max(...ylist) - Math.min(...ylist);
 		const bigrange = Math.max(xrange, yrange);
 		return bigrange > 100;
+	}
+	
+	function aspect_ratio(pointlist){
+		const {x:x1, y:y1} = pointlist[0];
+		const {x:x2, y:y2} = pointlist[1];
+		const {x:x3, y:y3} = pointlist[3];
+		const len1 = Math.hypot(x2-x1, y2-y1);
+		const len2 = Math.hypot(x3-x2, y3-y2);
+		return Math.max(len1/len2, len2/len1);
 	}
 }
 
