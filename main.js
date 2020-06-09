@@ -3,6 +3,13 @@ import {preimage, image_draw, quad_image} from './modules/transform.js';
 import {load_image} from './modules/load_image.js';
 import * as stamp from './modules/stamp.js';
 
+function left_pad(str, length){
+	while(str.length < length){
+		str = ' ' + str
+	}
+	return str
+}
+
 function add_hover_coords(canvas, display, unit = 100){
 	canvas.addEventListener('mousemove', function(e){
 		const rect = canvas.getBoundingClientRect();
@@ -10,10 +17,7 @@ function add_hover_coords(canvas, display, unit = 100){
 		const y = e.clientY - rect.top;
 		const re = (x - canvas.width/2) / unit;
 		const im = (canvas.height/2 - y) / unit;
-		let re_str = re.toFixed(2);
-		if(re_str >= 0){
-			re_str = ' '+re_str;
-		}
+		const re_str = left_pad(re.toFixed(2), 5);
 		let im_str;
 		if(im>=0){
 			im_str = ' + ' + im.toFixed(2);
@@ -21,9 +25,10 @@ function add_hover_coords(canvas, display, unit = 100){
 			im_str = ' - ' + (-im).toFixed(2);
 		}
 		const theta = Math.atan2(im, re);
-		const theta_str = theta>=0? ' '+theta.toFixed(2) : theta.toFixed(2);
+		const theta_str = left_pad(theta.toFixed(2), 5);
+		const degrees_str = left_pad((theta*180/Math.PI).toFixed(1),6);
 		const r = Math.hypot(im, re);
-		display.innerHTML = re_str+im_str+'i (r='+r.toFixed(2)+', θ='+theta_str+')' ;
+		display.innerHTML = re_str+im_str+'i (r = '+r.toFixed(2)+', θ ='+theta_str+' radians ='+degrees_str +' degrees)' ;
 	});
 }
 
